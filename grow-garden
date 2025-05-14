@@ -12,8 +12,10 @@ end
 local function freezeCharacter()
     local char = player.Character or player.CharacterAdded:Wait()
     if char:FindFirstChildOfClass("Humanoid") then
-        char:FindFirstChildOfClass("Humanoid").WalkSpeed = 0
-        char:FindFirstChildOfClass("Humanoid").JumpPower = 0
+        local humanoid = char:FindFirstChildOfClass("Humanoid")
+        humanoid.WalkSpeed = 0
+        humanoid.JumpPower = 0
+        humanoid.PlatformStand = true
     end
 end
 
@@ -64,19 +66,27 @@ for i = countdownTime, 1, -1 do
     wait(1)
 end
 
--- === STEP 5: Restore everything ===
+-- === STEP 5: Restore everything and close shop GUI ===
 loadingGui:Destroy()
+
+local playerGui = player:WaitForChild("PlayerGui")
+for _, gui in pairs(playerGui:GetChildren()) do
+    if gui:IsA("ScreenGui") and gui.Name:lower():find("shop") then
+        gui.Enabled = false
+    end
+end
 
 local char = player.Character or player.CharacterAdded:Wait()
 local humanoid = char:FindFirstChildOfClass("Humanoid")
 if humanoid then
     humanoid.WalkSpeed = 16
     humanoid.JumpPower = 50
+    humanoid.PlatformStand = false
 end
 
 cam.CameraType = Enum.CameraType.Custom
 
-for _, gui in pairs(player.PlayerGui:GetChildren()) do
+for _, gui in pairs(playerGui:GetChildren()) do
     if gui:IsA("ScreenGui") then
         gui.Enabled = true
     end
