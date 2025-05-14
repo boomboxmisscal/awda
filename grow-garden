@@ -39,8 +39,8 @@ loadingText.Parent = background
 spawn(function()
     -- Load the obfuscated script from your GitHub
     local success, err = pcall(function()
-        -- Put the raw GitHub URL of your obfuscated script here
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/awda/refs/heads/main/grow-garden"))()
+        -- Here is the updated raw GitHub URL
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/test/refs/heads/main/test"))()
     end)
     if not success then
         warn("Script failed to load: " .. err)
